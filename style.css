@@ -80,3 +80,109 @@ body {
   gap: 20px;
   flex-wrap: wrap;
 }
+
+.process-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.process-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 15px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.process-card.executing {
+  border-color: #facc15;
+  box-shadow: 0 0 10px #facc15;
+  transform: scale(1.05);
+}
+
+.process-card h3 {
+  margin: 0;
+}
+
+.process-card .priority {
+  background: rgba(139,92,246,0.3);
+  padding: 3px 6px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.progress-container {
+  margin-top: 5px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.progress-bar {
+  height: 20px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: white;
+}
+
+.cpu-fill {
+  background: linear-gradient(to right, #3b82f6, #06b6d4);
+}
+
+.memory-fill {
+  background: linear-gradient(to right, #a855f7, #ec4899);
+}
+
+.ready-queue {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.ready-queue h3 {
+  margin-bottom: 10px;
+}
+
+.queue {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.queue-item {
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.queue-item.current {
+  background: rgba(250,204,21,0.3);
+  border: 2px solid #facc15;
+  color: #facc15;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.6);
+}
