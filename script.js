@@ -104,3 +104,102 @@ function initializeQueue() {
 initializeQueue();
 renderProcesses();
 renderReadyQueue();
+function simulateTick() {
+  tick++;
+
+  if (!currentProcessId) {
+    pauseSimulation();
+    return;
+  }
+
+  const proc = processes.find(p => p.id === currentProcessId);
+  if (!proc) return;
+
+  if (scheduler === 'FCFS' || scheduler === 'Priority') {
+    proc.cpu = Math.max(0, proc.cpu - 10);
+    proc.memory = Math.max(0, proc.memory - 5);
+
+    if (proc.cpu === 0) {
+      readyQueue.shift();
+      currentProcessId = readyQueue[0] || null;
+    }
+  }
+
+  if (scheduler === 'RR') {
+    proc.cpu = Math.max(0, proc.cpu - 10);
+    proc.memory = Math.max(0, proc.memory - 5);
+    quantumRemaining -= 10;
+
+    if (proc.cpu === 0 || quantumRemaining <= 0) {
+      readyQueue.shift();
+      if (proc.cpu > 0) readyQueue.push(proc.id);
+      quantumRemaining = timeQuantum;
+      currentProcessId = readyQueue[0] || null;
+    }
+  }
+
+  renderProcesses();
+  renderReadyQueue();
+}
+
+function startSimulation() {
+  if (isRunning) return;
+  intervalId = setInterval(simulateTick, 1000);
+  isRunning = true;
+  startPauseBtn.textContent = 'Pause';
+}
+
+function pauseSimulation() {
+  clearInterval(intervalId);
+  isRunning = false;
+  startPauseBtn.textContent = 'Start';
+}
+
+function toggleSimulation() {
+  isRunning ? pauseSimulation() : startSimulation();
+}
+
+function addProcess() {
+  processes.push({
+    id: nextId,
+    name: `Process ${String.fromCharCode(64 + nextId)}`,
+    cpu: 80,
+    memory: 60,
+    priority: Math.floor(Math.random() * 5) + 1,
+    arrivalTime: tick
+  });
+  nextId++;
+  initializeQueue();
+  renderProcesses();
+  renderReadyQueue();
+}
+
+function resetSimulation() {
+  pauseSimulation();
+  tick = 0;
+  nextId = 4;
+  processes = [
+    { id: 1, name: 'Process A', cpu: 80, memory: 60, priority: 2, arrivalTime: 0 },
+    { id: 2, name: 'Process B', cpu: 70, memory: 50, priority: 1, arrivalTime: 1 },
+    { id: 3, name: 'Process C', cpu: 90, memory: 70, priority: 3, arrivalTime: 2 }
+  ];
+  initializeQueue();
+  renderProcesses();
+  renderReadyQueue();
+}
+
+schedulerEl.addEventListener('change', e => {
+  scheduler = e.target.value;
+  quantumContainer.style.display = scheduler === 'RR' ? 'block' : 'none';
+  resetSimulation();
+});
+
+timeQuantumEl.addEventListener('change', e => {
+  timeQuantum = Math.max(1, parseInt(e.target.value));
+  quantumRemaining = timeQuantum;
+});
+
+startPauseBtn.addEventListener('click', toggleSimulation);
+addProcessBtn.addEventListener('click', addProcess);
+resetBtn.addEventListener('click', resetSimulation);
+
