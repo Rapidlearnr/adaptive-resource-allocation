@@ -100,7 +100,7 @@ The project successfully demonstrates how an operating system allocates CPU reso
 
 ## 10. Author
 
-**Md Shaad Akhtar**
-**Utkarsh Patel**
-**Manas Mankotia**
+**Md Shaad Akhtar**,
+ **Utkarsh Patel**,
+ **Manas Mankotia**
 
