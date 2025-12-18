@@ -1,12 +1,82 @@
 body {
-  background-color: #0f172a;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom right, #0f172a, #5b21b6, #0f172a);
   color: white;
-  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
 }
 
-button {
-  padding: 10px;
-  margin: 5px;
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.header p {
+  color: #d8b4fe;
+}
+
+.control-panel {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-end;
+}
+
+.controls label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.controls select,
+.controls input {
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.2);
+  color: black;
+}
+
+.controls .buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.controls button {
+  padding: 5px 15px;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: bold;
+  color: white;
+  transition: 0.2s;
+}
+
+#startPause { background-color: #10b981; }
+#startPause.paused { background-color: #f97316; }
+#addProcess { background-color: #3b82f6; }
+#reset { background-color: #ef4444; }
+
+.status {
+  margin-top: 10px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
 }
