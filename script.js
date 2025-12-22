@@ -4,11 +4,11 @@ let processes = [
   { id: 3, name: 'Process C', cpu: 90, memory: 70, priority: 3, arrivalTime: 2 }
 ];
 
-let scheduler = 'RR';
+let scheduler = 'FCFS';
 let timeQuantum = 20;
-let quantumRemaining = 20;
-let currentProcessId = null;
+let quantumRemaining = 0;
 let readyQueue = [];
+let currentProcessId = null;
 let tick = 0;
 let isRunning = false;
 let intervalId = null;
@@ -26,13 +26,16 @@ const readyQueueContainer = document.getElementById('readyQueueContainer');
 const activeCountEl = document.getElementById('activeCount');
 const tickCountEl = document.getElementById('tickCount');
 const quantumRemainingEl = document.getElementById('quantumRemaining');
+const quantumRemainingContainer = document.getElementById('quantumRemainingContainer');
 
 function renderProcesses() {
   processCardsEl.innerHTML = '';
   processes.forEach(proc => {
     const card = document.createElement('div');
     card.className = 'process-card';
-    if (proc.id === currentProcessId && isRunning) card.classList.add('executing');
+    if (proc.id === currentProcessId && isRunning) {
+      card.classList.add('executing');
+    }
 
     card.innerHTML = `
       <h3>${proc.name}</h3>
@@ -40,14 +43,18 @@ function renderProcesses() {
       <p>Priority: ${proc.priority}</p>
 
       <div class="progress-container">
-        <div class="progress-label"><span>CPU</span><span>${proc.cpu}%</span></div>
+        <div class="progress-label">
+          <span>CPU</span><span>${proc.cpu}%</span>
+        </div>
         <div class="progress-bar">
           <div class="progress-fill cpu-fill" style="width:${proc.cpu}%"></div>
         </div>
       </div>
 
       <div class="progress-container">
-        <div class="progress-label"><span>Memory</span><span>${proc.memory}%</span></div>
+        <div class="progress-label">
+          <span>Memory</span><span>${proc.memory}%</span>
+        </div>
         <div class="progress-bar">
           <div class="progress-fill memory-fill" style="width:${proc.memory}%"></div>
         </div>
@@ -60,7 +67,13 @@ function renderProcesses() {
 
   activeCountEl.textContent = processes.filter(p => p.cpu > 0).length;
   tickCountEl.textContent = tick;
-  quantumRemainingEl.textContent = quantumRemaining;
+
+  if (scheduler === 'RR') {
+    quantumRemainingEl.textContent = quantumRemaining;
+    quantumRemainingContainer.style.display = 'inline';
+  } else {
+    quantumRemainingContainer.style.display = 'none';
+  }
 }
 
 function renderReadyQueue() {
@@ -77,19 +90,27 @@ function renderReadyQueue() {
 }
 
 function initializeQueue() {
-  const active = processes.filter(p => p.cpu > 0);
+  readyQueue = [];
+  currentProcessId = null;
+
+  let active = processes.filter(p => p.cpu > 0);
 
   if (scheduler === 'FCFS' || scheduler === 'RR') {
     active.sort((a, b) => a.arrivalTime - b.arrivalTime);
   }
 
   if (scheduler === 'Priority') {
-    active.sort((a, b) => a.priority - b.priority);
+    active.sort((a, b) => {
+      if (a.priority === b.priority) {
+        return a.arrivalTime - b.arrivalTime;
+      }
+      return a.priority - b.priority;
+    });
   }
 
   readyQueue = active.map(p => p.id);
   currentProcessId = readyQueue[0] || null;
-  quantumRemaining = timeQuantum;
+  quantumRemaining = scheduler === 'RR' ? timeQuantum : 0;
 }
 
 function simulateTick() {
@@ -132,11 +153,6 @@ function simulateTick() {
 
 function startSimulation() {
   if (isRunning) return;
-
-  if (!readyQueue.length) {
-    initializeQueue();
-  }
-
   intervalId = setInterval(simulateTick, 1000);
   isRunning = true;
   startPauseBtn.textContent = 'Pause';
@@ -199,4 +215,5 @@ resetBtn.addEventListener('click', resetSimulation);
 initializeQueue();
 renderProcesses();
 renderReadyQueue();
+
 
